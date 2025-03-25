@@ -30,10 +30,18 @@ export default {
           dark: "#121212",
           gray: "#272727",
           blue: "#00E5FF",
+          "blue-dark": "#0088AA",
           yellow: "#FFD60A",
+          "yellow-dark": "#CCAA00",
           green: "#00E676",
+          "green-dark": "#00AA55",
           purple: "#7B5AF0",
-          red: "#FF0044"
+          "purple-dark": "#5D3CBD",
+          red: "#FF0044",
+          "red-dark": "#CC0033",
+          cyan: "#18FFFF",
+          magenta: "#FF00FF",
+          orange: "#FF8A00"
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -117,6 +125,14 @@ export default {
         "progress-fill": {
           "0%": { width: "0%" },
           "100%": { width: "100%" }
+        },
+        "float": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" }
+        },
+        "rotate-slow": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" }
         }
       },
       animation: {
@@ -129,17 +145,31 @@ export default {
         "fade-in-right": "fade-in-right 0.4s ease-out",
         "scale-in": "scale-in 0.3s ease-out",
         "slide-in-bottom": "slide-in-bottom 0.4s ease-out",
-        "progress-fill": "progress-fill 2s ease-out forwards"
+        "progress-fill": "progress-fill 2s ease-out forwards",
+        "float": "float 6s ease-in-out infinite",
+        "rotate-slow": "rotate-slow 15s linear infinite"
       },
       boxShadow: {
         'neon': '0 0 5px rgba(0, 229, 255, 0.5), 0 0 10px rgba(0, 229, 255, 0.3)',
         'neon-hover': '0 0 15px rgba(0, 229, 255, 0.8), 0 0 20px rgba(0, 229, 255, 0.5)',
         'neon-yellow': '0 0 5px rgba(255, 214, 10, 0.5), 0 0 10px rgba(255, 214, 10, 0.3)',
+        'neon-green': '0 0 5px rgba(0, 230, 118, 0.5), 0 0 10px rgba(0, 230, 118, 0.3)',
+        'neon-red': '0 0 5px rgba(255, 0, 68, 0.5), 0 0 10px rgba(255, 0, 68, 0.3)',
+        'neon-purple': '0 0 5px rgba(123, 90, 240, 0.5), 0 0 10px rgba(123, 90, 240, 0.3)',
         'glass': '0 4px 30px rgba(0, 0, 0, 0.1)'
       },
       backdropBlur: {
         'xs': '2px',
-      }
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 90deg at 50% 50%, var(--tw-gradient-stops))',
+        'terminal-grid': 'linear-gradient(rgba(39, 39, 39, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(39, 39, 39, 0.3) 1px, transparent 1px)',
+        'glow-conic': 'conic-gradient(from 180deg at 50% 50%, #00E5FF 0deg, #121212 360deg)',
+      },
+      backgroundSize: {
+        'grid-pattern': '30px 30px',
+      },
     }
   },
   plugins: [require("tailwindcss-animate")],
