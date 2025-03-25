@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, Code, Upload as UploadIcon, Image as ImageIcon, Command, Github } from 'lucide-react';
@@ -35,31 +34,51 @@ const Landing = () => {
     },
   ];
   
-  const terminalCommands = [
+  const techJokeTerminalCommands = [
     {
       command: "npx deployly-cli login",
-      response: ["Logging in to Deployly...", "Successfully logged in as devuser@example.com"],
+      response: [
+        "Logging in to Deployly...", 
+        "Authorization successful! Welcome back, human... or are you a robot? 🤔",
+        "If you're a robot, remember: ⚠️ Three laws of robotics apply here!"
+      ],
       delay: 1200
     },
     {
       command: "npx deployly-cli deploy --dir ./dist",
       response: [
         "Scanning files...",
-        "Uploading assets...",
+        "Found 148 files, 12MB of JS frameworks, and one lonely console.log('debug me')...",
+        "Uploading assets... (Don't worry, we're not judging your CSS)",
         "Configuring deployment...",
-        "✅ Success! Your site is live at: https://my-app.deployly.app"
+        "Applying quantum entanglement to your static files...",
+        "✅ Success! Your site is live at: https://my-app.deployly.app",
+        "Time saved: approximately 42 coffee breaks ☕"
       ],
       delay: 1500,
       isCode: true
     },
     {
-      command: "npx deployly-cli images upload ./logo.png",
+      command: "npx deployly-cli joke",
       response: [
-        "Uploading image...",
-        "✅ Image uploaded successfully!",
-        "Image URL: https://img.deployly.app/i/abc123def456"
+        "Why do programmers prefer dark mode?",
+        "Because light attracts bugs! 🐛",
+        "",
+        "How many programmers does it take to change a light bulb?",
+        "None. It's a hardware problem."
       ],
       delay: 1000
+    },
+    {
+      command: "git commit -m \"Fixed bug that should never have existed\"",
+      response: [
+        "🤔 Are you sure about that commit message?",
+        "Suggested alternatives:",
+        "- \"Temporarily fixed the thing we'll break again later\"",
+        "- \"It works on my machine™\"",
+        "- \"Don't touch this code again, ever\""
+      ],
+      delay: 1200
     }
   ];
   
@@ -93,7 +112,7 @@ const Landing = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col relative">
+    <div className="min-h-screen flex flex-col relative cursor-none">
       <ThreeJSBackground />
       
       <header className="py-6 px-8 flex items-center justify-between border-b border-terminal-gray/30 relative z-10">
@@ -156,10 +175,10 @@ const Landing = () => {
                 </div>
               </div>
               
-              <div className="glass-panel rounded-lg overflow-hidden shadow-neon">
+              <div className="glass-panel rounded-lg overflow-hidden shadow-neon backdrop-blur-md">
                 <DynamicTerminal 
-                  commands={terminalCommands} 
-                  title="deployly-cli@1.0.0"
+                  commands={techJokeTerminalCommands} 
+                  title="deployly-cli@1.0.0 - try not to laugh edition"
                 />
               </div>
             </div>

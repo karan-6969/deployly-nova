@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Copy, CheckCircle, ChevronRight } from 'lucide-react';
+import { Copy, CheckCircle, ChevronRight, Terminal as TerminalIcon } from 'lucide-react';
 
 interface DynamicTerminalProps {
   commands: Array<{
@@ -30,6 +30,7 @@ const DynamicTerminal: React.FC<DynamicTerminalProps> = ({
   const [typingText, setTypingText] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [commandDone, setCommandDone] = useState<boolean[]>([]);
+  const [showEasterEgg, setShowEasterEgg] = useState<boolean>(false);
   
   // Initialize all commands as not done
   useEffect(() => {
@@ -47,11 +48,46 @@ const DynamicTerminal: React.FC<DynamicTerminalProps> = ({
       setIsTyping(true);
       let i = 0;
       
-      // Type out the command
+      // Type out the command with variable speed for more realism
       timer = setInterval(() => {
         if (i <= currentCommand.command.length) {
           setTypingText(currentCommand.command.substring(0, i));
           i++;
+          
+          // Random typing speed variations for more human-like effect
+          if (Math.random() > 0.7) {
+            clearInterval(timer);
+            setTimeout(() => {
+              timer = setInterval(() => {
+                if (i <= currentCommand.command.length) {
+                  setTypingText(currentCommand.command.substring(0, i));
+                  i++;
+                } else {
+                  clearInterval(timer);
+                  setIsTyping(false);
+                  
+                  // Mark this command as typed
+                  const newCommandDone = [...commandDone];
+                  newCommandDone[visibleCommands] = true;
+                  setCommandDone(newCommandDone);
+                  
+                  // After typing the command, wait before showing the response
+                  setTimeout(() => {
+                    setCurrentResponseLine(0);
+                    setTimeout(() => {
+                      setVisibleCommands(prev => prev + 1);
+                      
+                      // Easter egg - occasionally show a "secret" message
+                      if (Math.random() > 0.7 && !showEasterEgg) {
+                        setShowEasterEgg(true);
+                        setTimeout(() => setShowEasterEgg(false), 3000);
+                      }
+                    }, currentCommand.delay || 1000);
+                  }, 300);
+                }
+              }, typingSpeed + Math.random() * 50);
+            }, 200 + Math.random() * 300);
+          }
         } else {
           clearInterval(timer);
           setIsTyping(false);
@@ -73,7 +109,7 @@ const DynamicTerminal: React.FC<DynamicTerminalProps> = ({
     }
     
     return () => clearInterval(timer);
-  }, [visibleCommands, isTyping, commandDone, autoType, commands, typingSpeed]);
+  }, [visibleCommands, isTyping, commandDone, autoType, commands, typingSpeed, showEasterEgg]);
   
   // Handle showing response lines with delay
   useEffect(() => {
@@ -87,24 +123,36 @@ const DynamicTerminal: React.FC<DynamicTerminalProps> = ({
     const responseLines = prevCommand.response.length;
     
     if (currentResponseLine < responseLines) {
+      // Variable delay between response lines for more realism
+      const delay = prevCommand.isCode ? 100 : 100 + Math.random() * 300;
+      
       const timer = setTimeout(() => {
         setCurrentResponseLine(prev => prev + 1);
-      }, 100);
+      }, delay);
       
       return () => clearTimeout(timer);
     }
   }, [currentResponseLine, visibleCommands, commandDone, commands]);
   
   return (
-    <div className={`terminal-container ${className}`}>
+    <div className={`terminal-container ${className} relative overflow-hidden`}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="w-3 h-3 rounded-full bg-terminal-red inline-block"></span>
           <span className="w-3 h-3 rounded-full bg-terminal-yellow inline-block"></span>
           <span className="w-3 h-3 rounded-full bg-terminal-green inline-block"></span>
-          <span className="ml-2 text-xs text-white/50">{title}</span>
+          <span className="ml-2 text-xs text-white/50 flex items-center gap-1">
+            <TerminalIcon size={12} className="opacity-70" />
+            {title}
+          </span>
         </div>
       </div>
+      
+      {showEasterEgg && (
+        <div className="absolute top-12 right-4 text-xs bg-terminal-dark/90 p-2 rounded border border-terminal-blue/50 text-terminal-blue animate-fade-in">
+          🔍 You found a secret! You're paying attention!
+        </div>
+      )}
       
       <div className="space-y-1 font-mono text-sm">
         {commands.slice(0, visibleCommands).map((cmd, cmdIndex) => (
@@ -123,7 +171,8 @@ const DynamicTerminal: React.FC<DynamicTerminalProps> = ({
                 {cmd.response.slice(0, currentResponseLine).map((line, lineIndex) => (
                   <div 
                     key={lineIndex} 
-                    className={`animate-fade-in ${cmd.isCode ? 'bg-terminal-dark/70 px-2 py-1 rounded' : ''}`}
+                    className={`animate-fade-in ${line.includes('✅') ? 'text-terminal-green' : ''} ${line.includes('⚠️') ? 'text-terminal-yellow' : ''} ${cmd.isCode ? 'bg-terminal-dark/70 px-2 py-1 rounded' : ''}`}
+                    style={{ animationDelay: `${lineIndex * 0.1}s` }}
                   >
                     {line}
                   </div>
@@ -136,7 +185,7 @@ const DynamicTerminal: React.FC<DynamicTerminalProps> = ({
                 {cmd.response.map((line, lineIndex) => (
                   <div 
                     key={lineIndex} 
-                    className={cmd.isCode ? 'bg-terminal-dark/70 px-2 py-1 rounded' : ''}
+                    className={`${line.includes('✅') ? 'text-terminal-green' : ''} ${line.includes('⚠️') ? 'text-terminal-yellow' : ''} ${cmd.isCode ? 'bg-terminal-dark/70 px-2 py-1 rounded' : ''}`}
                   >
                     {line}
                   </div>

@@ -57,6 +57,14 @@
     overflow-x: hidden;
   }
 
+  .cursor-none {
+    cursor: none !important;
+  }
+  
+  .cursor-none * {
+    cursor: none !important;
+  }
+
   ::selection {
     @apply bg-terminal-blue/20 text-white;
   }
@@ -71,6 +79,14 @@
   
   ::-webkit-scrollbar-thumb {
     @apply bg-terminal-gray/50 rounded-full hover:bg-terminal-gray/70 transition-colors;
+  }
+  
+  a, button, [role="button"] {
+    @apply transition-all duration-200;
+  }
+  
+  a:hover, button:hover, [role="button"]:hover {
+    @apply text-white;
   }
 }
 
@@ -117,81 +133,7 @@
     @apply text-terminal-green font-semibold;
   }
   
-  .sidebar-item {
-    @apply flex items-center gap-3 px-3 py-2 rounded-md transition-all text-white/70 hover:text-white hover:bg-white/5;
-  }
-  
-  .sidebar-item.active {
-    @apply bg-terminal-blue/10 text-terminal-blue shadow-neon;
-  }
-  
-  .page-transition {
-    @apply animate-fade-in;
-  }
-  
-  .card-hover {
-    @apply transition-all hover:translate-y-[-2px] hover:shadow-neon;
-  }
-  
-  .btn-glow {
-    @apply relative overflow-hidden;
-  }
-  
-  .btn-glow::before {
-    @apply content-[''] absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite] pointer-events-none;
-  }
-  
-  .grid-bg {
-    @apply bg-terminal-grid bg-grid-pattern;
-  }
-  
-  .code-block {
-    @apply bg-terminal-dark/80 p-4 rounded-md border border-terminal-gray/50 overflow-x-auto font-mono text-sm;
-  }
-  
-  .code-block pre {
-    @apply text-white/80;
-  }
-  
-  .code-line {
-    @apply flex;
-  }
-  
-  .code-line-number {
-    @apply text-terminal-gray mr-4 select-none;
-  }
-  
-  .tag {
-    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
-  }
-  
-  .tag-blue {
-    @apply bg-terminal-blue/10 text-terminal-blue;
-  }
-  
-  .tag-yellow {
-    @apply bg-terminal-yellow/10 text-terminal-yellow;
-  }
-  
-  .tag-green {
-    @apply bg-terminal-green/10 text-terminal-green;
-  }
-  
-  .tag-red {
-    @apply bg-terminal-red/10 text-terminal-red;
-  }
-  
-  .tag-purple {
-    @apply bg-terminal-purple/10 text-terminal-purple;
-  }
-  
-  .float-element {
-    @apply animate-float;
-  }
-  
-  .rotate-element {
-    @apply animate-rotate-slow;
-  }
+  /* ... keep existing code (the rest of the component classes) */
 }
 
 /* Custom animations */
@@ -200,3 +142,30 @@
     transform: translateX(100%);
   }
 }
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 10px 2px rgba(0, 229, 255, 0.4);
+    transform: scale(1); 
+  }
+  50% { 
+    box-shadow: 0 0 20px 5px rgba(0, 229, 255, 0.7);
+    transform: scale(1.05); 
+  }
+}
+
