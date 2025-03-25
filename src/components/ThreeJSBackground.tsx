@@ -22,54 +22,76 @@ const ThreeJSBackground = () => {
     renderer.setClearColor(0x000000, 0);
     containerRef.current.appendChild(renderer.domElement);
     
-    // Create particles
+    // Create particles with improved distribution
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 1500;
+    const particlesCount = 2000;
     
     const posArray = new Float32Array(particlesCount * 3);
+    const sizeArray = new Float32Array(particlesCount);
     
-    for (let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 15;
+    for (let i = 0; i < particlesCount * 3; i += 3) {
+      // Create a more interesting distribution pattern
+      const radius = Math.random() * 10;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI;
+      
+      posArray[i] = radius * Math.sin(phi) * Math.cos(theta);
+      posArray[i+1] = radius * Math.sin(phi) * Math.sin(theta);
+      posArray[i+2] = radius * Math.cos(phi);
+      
+      // Vary the size of particles
+      sizeArray[i/3] = Math.random() * 0.03 + 0.01;
     }
     
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    particlesGeometry.setAttribute('size', new THREE.BufferAttribute(sizeArray, 1));
     
-    // Create particle material
+    // Create custom shader material for more interesting particles
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.03,
-      color: 0x00e5ff,
+      size: 0.02,
+      color: new THREE.Color(0x00e5ff),
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending,
     });
     
     // Create points mesh
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particlesMesh);
     
-    // Create torus
-    const torusGeometry = new THREE.TorusGeometry(3, 0.5, 16, 100);
-    const torusMaterial = new THREE.MeshBasicMaterial({ 
-      color: 0xFF0044,
-      transparent: true,
-      opacity: 0.15,
-      wireframe: true
-    });
-    const torus = new THREE.Mesh(torusGeometry, torusMaterial);
-    torus.rotation.x = Math.PI / 2;
-    scene.add(torus);
+    // Add small distant stars (smaller, more numerous)
+    const smallStarsGeometry = new THREE.BufferGeometry();
+    const smallStarsCount = 5000;
     
-    // Create octahedron
-    const octahedronGeometry = new THREE.OctahedronGeometry(1.5, 0);
-    const octahedronMaterial = new THREE.MeshBasicMaterial({ 
-      color: 0xFFD60A,
-      transparent: true,
-      opacity: 0.1,
-      wireframe: true
-    });
-    const octahedron = new THREE.Mesh(octahedronGeometry, octahedronMaterial);
-    octahedron.position.set(-5, 2, -3);
-    scene.add(octahedron);
+    const smallStarsPosArray = new Float32Array(smallStarsCount * 3);
     
+    for (let i = 0; i < smallStarsCount * 3; i += 3) {
+      // Create a spherical distribution but much further away
+      const radius = 15 + Math.random() * 20;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI;
+      
+      smallStarsPosArray[i] = radius * Math.sin(phi) * Math.cos(theta);
+      smallStarsPosArray[i+1] = radius * Math.sin(phi) * Math.sin(theta);
+      smallStarsPosArray[i+2] = radius * Math.cos(phi);
+    }
+    
+    smallStarsGeometry.setAttribute('position', new THREE.BufferAttribute(smallStarsPosArray, 3));
+    
+    const smallStarsMaterial = new THREE.PointsMaterial({
+      size: 0.01,
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.4,
+    });
+    
+    const smallStarsMesh = new THREE.Points(smallStarsGeometry, smallStarsMaterial);
+    scene.add(smallStarsMesh);
+    
+    // Add subtle ambient lighting for depth
+    const ambientLight = new THREE.AmbientLight(0x002233, 0.2);
+    scene.add(ambientLight);
+
     // Handle window resize
     const handleResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -79,47 +101,49 @@ const ThreeJSBackground = () => {
     
     window.addEventListener('resize', handleResize);
     
-    // Mouse movement effect
+    // Mouse movement effect with smoother tracking
     let mouseX = 0;
     let mouseY = 0;
+    let targetMouseX = 0;
+    let targetMouseY = 0;
     
     const handleMouseMove = (event: MouseEvent) => {
-      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+      targetMouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      targetMouseY = -(event.clientY / window.innerHeight) * 2 + 1;
     };
     
     document.addEventListener('mousemove', handleMouseMove);
     
-    // Scroll effect
+    // Scroll effect with improved interpolation
     const handleScroll = () => {
       setScrollY(window.scrollY);
-      // Adjust camera and objects based on scroll
-      const scrollFactor = window.scrollY * 0.0005;
-      camera.position.z = 5 + scrollFactor * 2;
-      particlesMesh.rotation.x = scrollFactor * 0.5;
-      torus.rotation.z = scrollFactor * 0.8;
-      octahedron.rotation.y = scrollFactor * 1.2;
     };
     
     window.addEventListener('scroll', handleScroll);
     
-    // Animation loop
+    // Animation loop with smooth transitions
     const animate = () => {
       requestAnimationFrame(animate);
       
-      // Rotate particles based on mouse position and time
-      particlesMesh.rotation.x += 0.0003;
-      particlesMesh.rotation.y += 0.0003;
+      // Smooth mouse tracking with lerp (linear interpolation)
+      mouseX += (targetMouseX - mouseX) * 0.05;
+      mouseY += (targetMouseY - mouseY) * 0.05;
       
-      particlesMesh.rotation.x += mouseY * 0.0005;
-      particlesMesh.rotation.y += mouseX * 0.0005;
+      // Scroll-based camera movement
+      const scrollFactor = window.scrollY * 0.0003;
+      camera.position.y = -scrollFactor * 2;
       
-      // Rotate torus
-      torus.rotation.z += 0.001;
+      // Gentle particle rotation
+      particlesMesh.rotation.x += 0.0001;
+      particlesMesh.rotation.y += 0.0001;
       
-      // Rotate octahedron
-      octahedron.rotation.x += 0.001;
-      octahedron.rotation.y += 0.002;
+      // Mouse-controlled rotation
+      particlesMesh.rotation.x += mouseY * 0.0003;
+      particlesMesh.rotation.y += mouseX * 0.0003;
+      
+      // Small stars subtle rotation
+      smallStarsMesh.rotation.x += 0.0001;
+      smallStarsMesh.rotation.y += 0.00005;
       
       renderer.render(scene, camera);
     };
