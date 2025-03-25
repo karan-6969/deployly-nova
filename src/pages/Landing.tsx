@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronRight, Code, Upload as UploadIcon, Image as ImageIcon } from 'lucide-react';
 import AnimatedTitle from '../components/AnimatedTitle';
 import DragDropUpload from '../components/DragDropUpload';
+import ThreeJSBackground from '../components/ThreeJSBackground';
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -62,8 +63,10 @@ const Landing = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="py-6 px-8 flex items-center justify-between border-b border-terminal-gray/30">
+    <div className="min-h-screen flex flex-col relative">
+      <ThreeJSBackground />
+      
+      <header className="py-6 px-8 flex items-center justify-between border-b border-terminal-gray/30 relative z-10">
         <div className="flex items-center">
           <div className="w-10 h-10 rounded bg-terminal-blue flex items-center justify-center mr-3">
             <span className="text-black font-bold">D</span>
@@ -87,7 +90,7 @@ const Landing = () => {
         </div>
       </header>
       
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         <section className="py-20 px-8">
           <div className="max-w-5xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
@@ -131,7 +134,7 @@ const Landing = () => {
             <h2 className="text-3xl font-bold mb-12">Ready to Deploy?</h2>
             
             <button 
-              onClick={() => navigate('/dashboard')} 
+              onClick={() => navigate('/signup')} 
               className="px-6 py-3 rounded-md bg-terminal-blue text-white font-medium hover:bg-terminal-blue/80 transition-colors flex items-center gap-2 mx-auto"
             >
               Get Started <ChevronRight size={18} />
@@ -140,7 +143,7 @@ const Landing = () => {
         </section>
       </main>
       
-      <footer className="py-8 px-8 border-t border-terminal-gray/30">
+      <footer className="py-8 px-8 border-t border-terminal-gray/30 relative z-10">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center">
           <div className="flex items-center mb-4 md:mb-0">
             <div className="w-8 h-8 rounded bg-terminal-blue flex items-center justify-center mr-2">
