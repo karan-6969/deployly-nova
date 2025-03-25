@@ -66,6 +66,7 @@ const DynamicTerminal: React.FC<DynamicTerminalProps> = ({
       )}
       
       <div className="space-y-1 font-mono text-sm">
+        <div className="text-terminal-yellow font-bold">[ Bring the cursor here and press Enter to see the magic! ]</div>
         {commands.slice(0, visibleCommands).map((cmd, cmdIndex) => (
           <div key={cmdIndex} className="mb-3">
             {showPrompt && (
